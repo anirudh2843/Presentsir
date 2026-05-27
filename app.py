@@ -9,13 +9,12 @@ def main():
     if "login_type" not in st.session_state:
         st.session_state["login_type"] = None
 
-    match st.session_state["login_type"]:
-        case "Student":
-            student_screen()
-        case "Teacher":
-            teacher_screen()
-        case None:
-            home_screen()
+    if st.session_state["login_type"] == "Student":
+        student_screen()
+    elif st.session_state["login_type"] == "Teacher":
+        teacher_screen()
+    else:
+        home_screen()
 
 
 main()
