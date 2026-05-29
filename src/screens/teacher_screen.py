@@ -56,6 +56,10 @@ def teacher_dashboard():
             "Logout", type="secondary", key="loginbackbtn", shortcut="control+backspace"
         ):
             st.session_state["is_logged_in"] = False
+
+            st.query_params.clear()
+            st.session_state.clear()
+
             del st.session_state.teacher_data
             st.rerun()
 
@@ -350,6 +354,10 @@ def login_teacher(username, password):
         st.session_state.user_role = "teacher"
         st.session_state.teacher_data = teacher
         st.session_state.is_logged_in = True
+
+        st.query_params["role"] = "teacher"
+        st.query_params["teacher_id"] = teacher["teacher_id"]
+
         return True
 
     return False

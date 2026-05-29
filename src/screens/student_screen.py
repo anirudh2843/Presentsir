@@ -37,6 +37,10 @@ def student_dashboard():
             "Logout", type="secondary", key="loginbackbtn", shortcut="control+backspace"
         ):
             st.session_state["is_logged_in"] = False
+
+            st.query_params.clear()
+            st.session_state.clear()
+
             del st.session_state.student_data
             st.rerun()
 
@@ -151,6 +155,10 @@ def student_screen():
                         st.session_state.is_logged_in = True
                         st.session_state.user_role = "student"
                         st.session_state.student_data = student
+
+                        st.query_params["role"] = "student"
+                        st.query_params["student_id"] = student["student_id"]
+
                         st.toast(f"Welcome Back {student['name']}")
                         time.sleep(1)
                         st.rerun()
