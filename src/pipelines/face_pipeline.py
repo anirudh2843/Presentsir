@@ -9,11 +9,9 @@ from src.database.db import get_all_students
 
 @st.cache_resource
 def load_dlib_models():
-    detector = dlib.get_frontal_face_detector()  # face detector model
+    detector = dlib.get_frontal_face_detector()
 
-    sp = dlib.shape_predictor(
-        face_recognition_models.pose_predictor_model_location()
-    )  # face landmark predictor model
+    sp = dlib.shape_predictor(face_recognition_models.pose_predictor_model_location())
 
     facerec = dlib.face_recognition_model_v1(
         face_recognition_models.face_recognition_model_location()

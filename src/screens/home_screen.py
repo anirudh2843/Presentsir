@@ -20,7 +20,7 @@ def home_screen():
             icon=":material/arrow_outward:",
             icon_position="right",
         ):
-            st.session_state["login_type"] = "Student"
+            st.session_state["login_type"] = "student"
             st.rerun()
 
     with col2:
@@ -32,7 +32,7 @@ def home_screen():
             icon=":material/arrow_outward:",
             icon_position="right",
         ):
-            st.session_state["login_type"] = "Teacher"
+            st.session_state["login_type"] = "teacher"
             st.rerun()
 
     footer_home()
