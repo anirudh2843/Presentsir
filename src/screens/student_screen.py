@@ -40,8 +40,6 @@ def student_dashboard():
 
             st.query_params.clear()
             st.session_state.clear()
-
-            del st.session_state.student_data
             st.rerun()
 
     st.space()

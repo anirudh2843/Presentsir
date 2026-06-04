@@ -17,7 +17,10 @@ from src.components.dialog_subject_share import share_subject_dialog
 from src.components.dialog_add_photo import add_photos_dialog
 
 from src.pipelines.face_pipeline import predict_attendance
-from src.components.dialog_attendance_results import attendance_result_dialog
+from src.components.dialog_attendance_results import (
+    attendance_result_dialog,
+    attendance_details_dialog,
+)
 import numpy as np
 
 from datetime import datetime
@@ -235,7 +238,6 @@ def teacher_tab_take_attendance():
 
                         attendance_to_log.append(
                             {
-                                "name": student["name"],
                                 "student_id": student["student_id"],
                                 "subject_id": selected_subject_id,
                                 "timestamp": current_timestamp,
@@ -305,9 +307,30 @@ def teacher_tab_attendance_records():
         return
 
     data = []
+    session_details = {}
 
     for r in records:
         ts = r.get("timestamp")
+        ts_group = ts.split(".")[0] if ts else None
+
+        session_key = (
+            ts_group,
+            r["subjects"]["name"],
+            r["subjects"]["subject_code"],
+        )
+
+        if session_key not in session_details:
+            session_details[session_key] = {
+                "present": [],
+                "absent": [],
+            }
+
+        student_name = r["students"]["name"]
+
+        if r.get("ispresent", False):
+            session_details[session_key]["present"].append(student_name)
+        else:
+            session_details[session_key]["absent"].append(student_name)
 
         data.append(
             {
@@ -337,11 +360,104 @@ def teacher_tab_attendance_records():
         + " Students"
     )
 
+    summary = summary.sort_values(
+        by="ts_group",
+        ascending=False,
+    )
+
     display_df = summary.sort_values(by="ts_group", ascending=False)[
-        ["Time", "Subject", "Subject Code", "Attendance Stats"]
+        [
+            "Subject",
+            "Subject Code",
+            "Attendance Stats",
+            "Time",
+        ]
     ]
 
     st.dataframe(display_df, width="stretch", hide_index=True)
+
+    st.divider()
+
+    st.subheader("Attendance Session Details")
+
+    # Build dropdown options
+    session_options = {}
+
+    for _, row in summary.iterrows():
+        label = f"{row['Subject']} | {row['Attendance Stats']} | {row['Time']}"
+
+        session_options[label] = (
+            row["ts_group"],
+            row["Subject"],
+            row["Subject Code"],
+        )
+
+    # Session selector
+    selected_session = st.selectbox(
+        "Select Attendance Session",
+        options=list(session_options.keys()),
+    )
+
+    # Show selected session details
+    if selected_session:
+        ts_group, subject, subject_code = session_options[selected_session]
+
+        details = session_details[
+            (
+                ts_group,
+                subject,
+                subject_code,
+            )
+        ]
+
+        details_data = []
+
+        # Present students
+        for student in details["present"]:
+            details_data.append(
+                {
+                    "Student Name": student,
+                    "Status": "✅ Present",
+                }
+            )
+
+        # Absent students
+        for student in details["absent"]:
+            details_data.append(
+                {
+                    "Student Name": student,
+                    "Status": "❌ Absent",
+                }
+            )
+
+        details_df = pd.DataFrame(details_data)
+
+        total_students = len(details_data)
+        present_count = len(details["present"])
+        absent_count = len(details["absent"])
+
+        attendance_percentage = (
+            round((present_count / total_students) * 100, 2)
+            if total_students > 0
+            else 0
+        )
+
+        c1, c2, c3 = st.columns(3)
+
+        with c1:
+            st.metric("Present", present_count)
+
+        with c2:
+            st.metric("Absent", absent_count)
+
+        with c3:
+            st.metric("Attendance %", f"{attendance_percentage}%")
+
+        st.dataframe(
+            details_df,
+            width="stretch",
+            hide_index=True,
+        )
 
 
 def login_teacher(username, password):
@@ -424,13 +540,13 @@ def register_teacher(
 ):
     if not teacher_username or not teacher_name or not teacher_pass:
         return False, "All Fields are required!"
-    if check_teacher_exists(teacher_username):
+    if check_teacher_exists(teacher_username, teacher_name):
         return False, "Username already taken"
     if teacher_pass != teacher_pass_confirm:
         return False, "Password doesn't match"
 
     try:
-        create_teacher(teacher_username, teacher_pass, teacher_name)
+        create_teacher(teacher_username, teacher_name, teacher_pass)
         return True, "Sucessfully Created! Login Now"
     except Exception as e:
         return False, "Unexpected Error!"
