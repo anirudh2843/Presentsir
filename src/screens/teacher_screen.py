@@ -63,7 +63,6 @@ def teacher_dashboard():
             st.query_params.clear()
             st.session_state.clear()
 
-            del st.session_state.teacher_data
             st.rerun()
 
     st.space()

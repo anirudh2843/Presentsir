@@ -6,18 +6,42 @@ def style_background_home():
         """
         <style>
 
-                .stApp {
-                    background: #5865F2 !important;
-                }
+        /* Main Background */
+        .stApp {
+           background: linear-gradient(
+    135deg,
+    #FFF8E7,
+    #FFE5B4,
+    #FFD8A8
+);
+        }
 
-                .stApp div[data-testid="stColumn"]{
-                    background-color:#E0E3FF !important;
-                    padding:2.5rem !important;
-                    border-radius: 5rem !important;
-                    }
-        </style>  
+        /* Remove default Streamlit spacing */
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
 
-                """,
+        /* Column Cards */
+        div[data-testid="stColumn"] {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 2rem !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+
+       h1 {
+    color: #1E293B !important;
+}
+
+h2, h3 {
+    color: #475569 !important;
+}
+
+        </style>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -28,7 +52,12 @@ def style_background_dashboard():
         <style>
 
                 .stApp {
-                    background: #E0E3FF !important;
+                    background: linear-gradient(
+    135deg,
+    #FFF8E7,
+    #FFE5B4,
+    #FFD8A8
+);
                 }
 
         </style>  
@@ -58,15 +87,17 @@ def style_base_layout():
             }
 
             h1 {
-                font-family: 'Climate Crisis', sans-serif !important;
-                font-size: 3.5rem !important;
-                line-height:1.1 1important;
-                margin-bottom:0rem !important;
+                font-family: 'Outfit', sans-serif !important;
+                font-size: 4rem !important;
+                font-weight: 800 !important;
+                line-height: 1 !important;
+                letter-spacing: -3px !important;
+                margin-bottom: 0.5rem !important;
+                color: #C2410C !important;
             }
                 
 
             h2 {
-                font-family: 'Climate Crisis', sans-serif !important;
                 font-size: 2rem !important;
                 line-height:0.9 !important;
                 margin-bottom:0rem !important;
@@ -79,7 +110,7 @@ def style_base_layout():
 
             button{
                 border-radius: 1.5rem !important;
-                background-color: #5865F2 !important;
+                background-color: #C2410C !important;
                 color: white !important;
                 padding: 10px 20px !important;
                 border: none !important;
