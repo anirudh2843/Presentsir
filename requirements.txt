@@ -4,7 +4,6 @@ pandas
 
 #Face recognition
 face-recognition
-face-recognition-models
 scikit-learn
 dlib-bin
 git+https://github.com/ageitgey/face_recognition_models.git
@@ -13,7 +12,7 @@ setuptools
 supabase
 bcrypt 
 
-segno #QR code generator
+segno
 pillow
 
 streamlit
