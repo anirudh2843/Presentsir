@@ -3,10 +3,10 @@ numpy
 pandas
 
 #Face recognition
-# face-recognition
+face-recognition
 scikit-learn
 dlib-bin
-# git+https://github.com/ageitgey/face_recognition_models.git
+git+https://github.com/ageitgey/face_recognition_models.git
 setuptools 
 
 supabase
@@ -17,5 +17,5 @@ pillow
 
 streamlit
 
-# librosa
-# resemblyzer
+librosa
+resemblyzer
